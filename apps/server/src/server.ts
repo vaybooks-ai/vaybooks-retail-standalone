@@ -1,52 +1,57 @@
 import app from './app';
+import { createServer } from 'http';
 
+// Get port from environment or use default
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || '0.0.0.0';
 
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// Create HTTP server
+const server = createServer(app);
 
-// Handle server errors
-server.on('error', (err: NodeJS.ErrnoException) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use`);
-    process.exit(1);
-  } else {
-    throw err;
-  }
-});
-
-// Graceful shutdown handler
-const gracefulShutdown = (signal: string) => {
-  console.log(`${signal} signal received: closing HTTP server`);
+// Start server
+server.listen(Number(PORT), HOST, () => {
+  const env = process.env.NODE_ENV || 'development';
+  const serverUrl = `http://${HOST}:${PORT}`;
+  const healthUrl = `http://${HOST}:${PORT}/health`;
   
-  // Close the server and stop accepting new connections
+  console.log(`
+╔════════════════════════════════════════╗
+║                                        ║
+║     VayBooks Server Started! 🚀       ║
+║                                        ║
+║     Environment: ${env.padEnd(22)}║
+║     Server: ${serverUrl.padEnd(32)}║
+║     Health: ${healthUrl.padEnd(32)}║
+║                                        ║
+╚════════════════════════════════════════╝
+  `);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
   server.close(() => {
     console.log('HTTP server closed');
     process.exit(0);
   });
-  
-  // Force shutdown after 10 seconds if graceful shutdown takes too long
-  setTimeout(() => {
-    console.error('Forced shutdown after timeout');
-    process.exit(1);
-  }, 10000);
-};
+});
 
-// Handle termination signals
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
+});
 
 // Handle uncaught exceptions
-process.on('uncaughtException', (err: Error) => {
-  console.error('Uncaught Exception:', err);
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
   process.exit(1);
 });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (reason: unknown) => {
-  console.error('Unhandled Rejection:', reason);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });
 

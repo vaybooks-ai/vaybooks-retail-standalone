@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import { createLogger, errorLogger } from './middleware/logger';
+import { sanitizeInput, validateRequest } from './middleware/validation';
 
 // Load environment variables
 dotenv.config();
@@ -38,6 +40,18 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
+// Logging middleware
+app.use(createLogger({
+  skipPaths: ['/health', '/favicon.ico'],
+  logBody: process.env.NODE_ENV === 'development'
+}));
+
+// Input sanitization
+app.use(sanitizeInput);
+
+// Add error logger before error handler
+app.use(errorLogger);
+
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response) => {
   res.json({
@@ -54,6 +68,16 @@ app.get('/api/v1/info', (_req: Request, res: Response) => {
     name: 'VayBooks API',
     version: '1.0.0',
     description: 'Business Management Software API',
+  });
+});
+
+// Test endpoint with validation
+app.post('/api/v1/test', validateRequest([
+  { field: 'name', required: true, type: 'string', minLength: 1, maxLength: 100 }
+]), (req: Request, res: Response) => {
+  res.json({
+    message: 'Test successful',
+    received: req.body,
   });
 });
 
