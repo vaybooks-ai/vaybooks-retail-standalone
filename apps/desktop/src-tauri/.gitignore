@@ -1,0 +1,15 @@
+# Rust build artifacts - NEVER commit
+target/
+Cargo.lock
+*.rlib
+*.rmeta
+
+# Build outputs
+dist/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

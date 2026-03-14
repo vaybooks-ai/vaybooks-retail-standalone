@@ -1,1 +1,0 @@
-# vaybooks-retail-standalone

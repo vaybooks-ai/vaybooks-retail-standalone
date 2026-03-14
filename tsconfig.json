@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@vaybooks/shared/*": ["packages/shared/src/*"],
+      "@vaybooks/database/*": ["packages/database/*"]
+    }
+  },
+  "references": [
+    { "path": "./apps/desktop" },
+    { "path": "./apps/web" },
+    { "path": "./apps/server" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/database" }
+  ],
+  "include": [],
+  "exclude": ["node_modules", "dist", "build", ".turbo"]
+}

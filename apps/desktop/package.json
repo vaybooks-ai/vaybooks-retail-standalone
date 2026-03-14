@@ -1,0 +1,18 @@
+{
+  "name": "@vaybooks/desktop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "preview": "tauri preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^1.5.3"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.9",
+    "typescript": "^5.3.3"
+  }
+}
