@@ -3,7 +3,7 @@
   "build": {
     "beforeDevCommand": "",
     "beforeBuildCommand": "pnpm --filter @vaybooks/web build",
-    "devPath": "http://localhost:3000",
+    "devPath": "http://localhost:3001",
     "distDir": "../../apps/web/out",
     "withGlobalTauri": false
   },
