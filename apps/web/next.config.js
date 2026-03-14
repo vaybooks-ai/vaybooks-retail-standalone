@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  distDir: 'out',
   reactStrictMode: true,
   swcMinify: true,
   images: {
@@ -17,8 +15,6 @@ const nextConfig = {
     // Enable if needed for Tauri
     // isrMemoryCacheSize: 0
   },
-  // Disable telemetry
-  telemetry: false,
   // Configure for Tauri
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   // Webpack configuration
