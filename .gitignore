@@ -13,6 +13,7 @@ dist/
 build/
 out/
 target/
+.next/
 
 # Misc
 .DS_Store
