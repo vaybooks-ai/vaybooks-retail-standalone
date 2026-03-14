@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeDevCommand": "pnpm --filter @vaybooks/web dev",
+    "beforeDevCommand": "",
     "beforeBuildCommand": "pnpm --filter @vaybooks/web build",
     "devPath": "http://localhost:3000",
     "distDir": "../../apps/web/out",
