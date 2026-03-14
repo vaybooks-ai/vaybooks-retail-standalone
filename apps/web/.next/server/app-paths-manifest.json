@@ -1,0 +1,14 @@
+{
+  "/not-found": "app/not-found.js",
+  "/page": "app/page.js",
+  "/sales/quotations/page": "app/sales/quotations/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/customers/page": "app/customers/page.js",
+  "/products/page": "app/products/page.js",
+  "/sales/returns/page": "app/sales/returns/page.js",
+  "/sales/invoices/page": "app/sales/invoices/page.js",
+  "/inventory/page": "app/inventory/page.js",
+  "/purchases/page": "app/purchases/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/reports/page": "app/reports/page.js"
+}
