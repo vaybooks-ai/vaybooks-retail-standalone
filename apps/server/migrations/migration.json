@@ -1,0 +1,12 @@
+{
+  "migrations": [
+    {
+      "version": 1,
+      "name": "initial_schema",
+      "file": "001_initial_schema.sql",
+      "description": "Create initial database schema with users, customers, suppliers, products",
+      "applied_at": null,
+      "checksum": null
+    }
+  ]
+}
