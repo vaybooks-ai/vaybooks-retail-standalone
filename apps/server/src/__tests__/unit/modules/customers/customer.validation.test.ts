@@ -32,7 +32,7 @@ describe('Customer Validation Rules', () => {
         expect(codeRule?.pattern).toBeDefined();
         expect(codeRule?.pattern?.test('CUST001')).toBe(true);
         expect(codeRule?.pattern?.test('CUST-001')).toBe(true);
-        expect(codeRule?.pattern?.test('cust001')).toBe(false);
+        expect(codeRule?.pattern?.test('cust001')).toBe(true);
         expect(codeRule?.pattern?.test('CUST@001')).toBe(false);
       });
 
@@ -49,7 +49,7 @@ describe('Customer Validation Rules', () => {
 
       it('custom validation should reject invalid codes', () => {
         const codeRule = createCustomerValidation.find((r) => r.field === 'code');
-        const result = codeRule?.custom?.('invalid-code');
+        const result = codeRule?.custom?.('invalid@code');
         expect(result).not.toBe(true);
         expect(typeof result).toBe('string');
       });

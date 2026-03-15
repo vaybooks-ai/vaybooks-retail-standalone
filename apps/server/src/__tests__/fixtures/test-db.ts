@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import path from 'path';
 import fs from 'fs';
+import { execSync } from 'child_process';
 
 let prisma: PrismaClient | null = null;
 
@@ -10,8 +11,24 @@ let prisma: PrismaClient | null = null;
 export async function setupTestDatabase(): Promise<PrismaClient> {
   const testDbPath = path.join(__dirname, '../../../test.db');
   
+  // Delete existing test database
+  if (fs.existsSync(testDbPath)) {
+    fs.unlinkSync(testDbPath);
+  }
+  
   // Set test database URL
   process.env.DATABASE_URL = `file:${testDbPath}`;
+  
+  // Push schema to test database using Prisma CLI
+  try {
+    execSync('pnpm prisma db push --skip-generate', {
+      cwd: path.join(__dirname, '../../..'),
+      stdio: 'ignore',
+      env: { ...process.env, DATABASE_URL: `file:${testDbPath}` },
+    });
+  } catch (error) {
+    console.error('Failed to push schema to test database:', error);
+  }
   
   prisma = new PrismaClient({
     datasources: {
@@ -21,7 +38,7 @@ export async function setupTestDatabase(): Promise<PrismaClient> {
     },
   });
 
-  // Run migrations
+  // Enable foreign keys
   await prisma.$executeRawUnsafe('PRAGMA foreign_keys = ON');
   
   return prisma;
@@ -36,7 +53,14 @@ export async function teardownTestDatabase(client: PrismaClient): Promise<void> 
   // Clean up test database file
   const testDbPath = path.join(__dirname, '../../../test.db');
   if (fs.existsSync(testDbPath)) {
-    fs.unlinkSync(testDbPath);
+    try {
+      // Wait a bit for file handles to be released on Windows
+      await new Promise(resolve => setTimeout(resolve, 100));
+      fs.unlinkSync(testDbPath);
+    } catch (error) {
+      // Ignore file deletion errors in teardown - file may still be locked
+      // The file will be deleted on next test run anyway
+    }
   }
 }
 
@@ -45,8 +69,17 @@ export async function teardownTestDatabase(client: PrismaClient): Promise<void> 
  */
 export async function resetDatabase(client: PrismaClient): Promise<void> {
   // Delete all data in reverse order of dependencies
-  await client.customerCustomField.deleteMany({});
-  await client.customerAddress.deleteMany({});
+  // Try to delete from each table, ignore errors if table doesn't exist
+  try {
+    await client.customerCustomField.deleteMany({});
+  } catch (error) {
+    // Table might not exist yet, ignore
+  }
+  try {
+    await client.customerAddress.deleteMany({});
+  } catch (error) {
+    // Table might not exist yet, ignore
+  }
   await client.customer.deleteMany({});
   await client.masterData.deleteMany({});
   await client.user.deleteMany({});

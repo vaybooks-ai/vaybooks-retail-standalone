@@ -19,4 +19,147 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-// Models will be added here as features are implemented
+// ============================================
+// MASTER DATA MODEL (Generic)
+// ============================================
+
+// Generic Master Data Table
+// Stores all master data with flexible dataType field
+model MasterData {
+  id                Int                    @id @default(autoincrement())
+  dataType          String                 // Type of master data (e.g., 'customerStatus', 'paymentTerm', 'salesRep')
+  value             String                 // The actual value/name
+  label             String?                // Display label (if different from value)
+  description       String?                // Additional description
+  
+  // Type-specific fields (stored as JSON for flexibility)
+  metadata          String?                // JSON string for additional properties
+  
+  // Status and ordering
+  isActive          Boolean                @default(true)
+  displayOrder      Int                    @default(0)
+  
+  // Timestamps
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  
+  // Indexes for performance
+  @@index([dataType])
+  @@index([isActive])
+  @@index([dataType, isActive])
+  @@unique([dataType, value])
+}
+
+// Customer model - Basic customer information
+model Customer {
+  id                Int                    @id @default(autoincrement())
+  code              String                 @unique
+  name              String
+  email             String?
+  phone             String?
+  mobile            String?
+  website           String?
+  
+  // Contact person
+  contactPerson     String?
+  contactEmail      String?
+  contactPhone      String?
+  
+  // Financial information
+  creditLimit       Float                  @default(0)
+  currentBalance    Float                  @default(0)
+  creditTermsDays   Int                    @default(0)
+  taxNumber         String?
+  taxExempt         Boolean                @default(false)
+  
+  // Status and metadata
+  isActive          Boolean                @default(true)
+  customerType      String                 @default("retail") // retail, wholesale, distributor
+  notes             String?
+  
+  // Master Data References (Plain Values - No Foreign Keys)
+  // These reference values from MasterData table but without foreign key constraints
+  // This allows flexibility if master data is deleted
+  statusValue       String?                // References MasterData where dataType='customerStatus'
+  paymentTermValue  String?                // References MasterData where dataType='paymentTerm'
+  salesRepValue     String?                // References MasterData where dataType='salesRep'
+  groupValue        String?                // References MasterData where dataType='customerGroup'
+  
+  // Relationships
+  addresses         CustomerAddress[]
+  customFields      CustomerCustomField[]
+  
+  // Timestamps
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  createdBy         Int?
+  updatedBy         Int?
+  
+  @@index([code])
+  @@index([email])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// Customer Address model - Multiple addresses per customer
+model CustomerAddress {
+  id                Int                    @id @default(autoincrement())
+  customerId        Int
+  customer          Customer               @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  // Address type
+  type              String                 @default("shipping") // billing, shipping, other
+  label             String?                // e.g., "Head Office", "Branch 1"
+  isDefault         Boolean                @default(false)
+  
+  // Address details
+  addressLine1      String
+  addressLine2      String?
+  city              String
+  state             String?
+  country           String
+  postalCode        String?
+  
+  // Contact at this address
+  contactPerson     String?
+  phone             String?
+  email             String?
+  
+  // Metadata
+  notes             String?
+  isActive          Boolean                @default(true)
+  
+  // Timestamps
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  
+  @@index([customerId])
+  @@index([type])
+  @@index([isDefault])
+  @@unique([customerId, type, isDefault])
+}
+
+// Customer Custom Fields model - Extensible custom fields
+model CustomerCustomField {
+  id                Int                    @id @default(autoincrement())
+  customerId        Int
+  customer          Customer               @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  // Field definition
+  fieldName         String
+  fieldLabel        String
+  fieldType         String                 @default("text") // text, number, date, select, boolean
+  fieldValue        String?
+  
+  // Metadata
+  isRequired        Boolean                @default(false)
+  displayOrder      Int                    @default(0)
+  
+  // Timestamps
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  
+  @@index([customerId])
+  @@index([fieldName])
+  @@unique([customerId, fieldName])
+}

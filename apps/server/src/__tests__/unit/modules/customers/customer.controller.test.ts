@@ -89,7 +89,11 @@ describe('CustomerController', () => {
       // Assert
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
-        ...mockResult,
+        data: CUSTOMER_SAMPLES,
+        total: 3,
+        page: 1,
+        limit: 20,
+        pagination: mockResult.pagination,
       });
     });
 
@@ -510,8 +514,8 @@ describe('CustomerController', () => {
       mockRequest.body = { customers };
       (mockRequest as any).user = { id: 1 };
       mockService.bulkImportCustomers.mockResolvedValue({
-        success: 2,
-        failed: 0,
+        successCount: 2,
+        failedCount: 0,
         errors: [],
       });
 
@@ -521,7 +525,7 @@ describe('CustomerController', () => {
       // Assert
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
-        data: { success: 2, failed: 0, errors: [] },
+        data: { successCount: 2, failedCount: 0, errors: [] },
         message: 'Imported 2 customers successfully',
       });
     });
@@ -728,6 +732,8 @@ describe('CustomerController', () => {
     it('should return customer statistics', async () => {
       // Arrange
       const stats = {
+        addressCount: 2,
+        customFieldCount: 3,
         totalAddresses: 2,
         totalCustomFields: 3,
         defaultBillingAddress: { id: 1 },
@@ -853,7 +859,7 @@ describe('CustomerController', () => {
     it('should exclude specified customer ID', async () => {
       // Arrange
       mockRequest.body = { code: 'CUST001' };
-      mockRequest.query = { excludeId: '1' };
+      mockRequest.params = { id: '1' };
       mockService.isCodeUnique.mockResolvedValue(true);
 
       // Act
@@ -914,7 +920,7 @@ describe('CustomerController', () => {
     it('should exclude specified customer ID', async () => {
       // Arrange
       mockRequest.body = { email: 'test@example.com' };
-      mockRequest.query = { excludeId: '1' };
+      mockRequest.params = { id: '1' };
       mockService.isEmailUnique.mockResolvedValue(true);
 
       // Act

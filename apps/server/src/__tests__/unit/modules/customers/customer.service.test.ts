@@ -635,6 +635,8 @@ describe('CustomerService', () => {
     it('should return customer statistics', async () => {
       // Arrange
       const stats = {
+        addressCount: 2,
+        customFieldCount: 3,
         totalAddresses: 2,
         totalCustomFields: 3,
         defaultBillingAddress: { id: 1 },
@@ -691,8 +693,8 @@ describe('CustomerService', () => {
       const result = await service.bulkImportCustomers(customers, 1);
 
       // Assert
-      expect(result.success).toBe(2);
-      expect(result.failed).toBe(0);
+      expect(result.successCount).toBe(2);
+      expect(result.failedCount).toBe(0);
       expect(result.errors).toHaveLength(0);
     });
 
@@ -712,8 +714,8 @@ describe('CustomerService', () => {
       const result = await service.bulkImportCustomers(customers, 1);
 
       // Assert
-      expect(result.success).toBe(1);
-      expect(result.failed).toBe(1);
+      expect(result.successCount).toBe(1);
+      expect(result.failedCount).toBe(1);
       expect(result.errors).toHaveLength(1);
     });
   });

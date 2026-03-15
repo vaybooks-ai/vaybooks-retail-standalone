@@ -38,7 +38,7 @@ export function createCustomerFixture(overrides?: Partial<Customer>): Customer {
 /**
  * Create a CreateCustomerDTO fixture
  */
-export function createCustomerDTOFixture(overrides?: Partial<CreateCustomerDTO>): CreateCustomerDTO {
+export function createCustomerDTOFixture(overrides?: any): any {
   return {
     code: 'CUST001',
     name: 'Test Customer',
@@ -50,9 +50,11 @@ export function createCustomerDTOFixture(overrides?: Partial<CreateCustomerDTO>)
     contactEmail: 'john@example.com',
     contactPhone: '1111111111',
     creditLimit: 10000,
+    currentBalance: 0,
     creditTermsDays: 30,
     taxNumber: 'TAX123456',
     taxExempt: false,
+    isActive: true,
     customerType: 'retail',
     notes: 'Test customer notes',
     statusValue: 'Active',

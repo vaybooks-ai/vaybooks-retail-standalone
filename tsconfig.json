@@ -2,7 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "types": ["node"],
     "paths": {
+      "@vaybooks/shared": ["packages/shared/src"],
       "@vaybooks/shared/*": ["packages/shared/src/*"],
       "@vaybooks/database/*": ["packages/database/*"]
     }

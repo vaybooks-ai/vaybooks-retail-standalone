@@ -1,9 +1,13 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
+  "references": [
+    { "path": "../../packages/shared" }
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
     "lib": ["ES2022"],
+    "types": ["node", "jest"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -21,12 +25,15 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./src",
+    "baseUrl": "../../",
     "paths": {
-      "@/*": ["*"],
-      "@/modules/*": ["modules/*"],
-      "@/core/*": ["core/*"],
-      "@/services/*": ["services/*"]
+      "@/*": ["apps/server/src/*"],
+      "@/modules/*": ["apps/server/src/modules/*"],
+      "@/core/*": ["apps/server/src/core/*"],
+      "@/services/*": ["apps/server/src/services/*"],
+      "@vaybooks/shared": ["packages/shared/src"],
+      "@vaybooks/shared/*": ["packages/shared/src/*"],
+      "@vaybooks/database/*": ["packages/database/*"]
     }
   },
   "include": ["src/**/*"],
