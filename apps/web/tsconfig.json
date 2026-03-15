@@ -24,7 +24,8 @@
       "@/components/*": ["./components/*"],
       "@/lib/*": ["./lib/*"],
       "@/hooks/*": ["./hooks/*"],
-      "@/styles/*": ["./styles/*"]
+      "@/styles/*": ["./styles/*"],
+      "@vaybooks/shared": ["../../packages/shared/dist/index.d.ts"]
     },
     "baseUrl": "."
   },

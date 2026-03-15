@@ -14,11 +14,6 @@ export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = React.useState(false);
   const [expandedItems, setExpandedItems] = React.useState<string[]>([]);
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const toggleExpanded = (title: string) => {
     setExpandedItems(prev =>
@@ -31,16 +26,6 @@ export function Sidebar({ className }: SidebarProps) {
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/');
   };
-
-  if (!mounted) {
-    return (
-      <div className={cn('flex flex-col border-r bg-background w-64', className)}>
-        <div className="flex h-16 items-center border-b px-4">
-          <span className="text-xl font-bold">VayBooks</span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
